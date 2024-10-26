@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}" lang="en">
+<div layout:fragment="content">
+    <div class="card text-bg-dark mb-3">
+        <div class="card-header">Modify Page</div>
+        <form action="/board/modify" method="get">
+            <div class="card-body">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" style="width:80px">Bno</span>
+                    <input type="text" class="form-control" name="bno" th:value="${dto.bno}" readonly>
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" style="width:80px">Title</span>
+                    <input type="text" class="form-control" name="title" th:value="${dto.title}" >
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" style="width:80px">Writer</span>
+                    <input type="text" class="form-control" name="writer" th:value="${dto.writer}">
+                </div>
+                <div class="input-group">
+                    <span class="input-group-text" style="width:80px">Content</span>
+                    <input class="form-control" name="content" th:value="${dto.content}">
+                </div>
+                <br>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="button" class="btn btn-outline-success">modify</button>
+                    <button type="button" class="btn btn-outline-dark">back</button>
+                    <button type="button" class="btn btn-outline-danger">Remove</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script layout:fragment="script" th:inline="javascript">
+    const formObj=document.querySelector("form")
+
+    document.querySelector(".btn-outline-success").addEventListener("click",function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        formObj.action="/board/modify";
+        formObj.method="post"
+        formObj.submit();
+    }, false);
+
+    document.querySelector(".btn-outline-dark").addEventListener("click",function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        self.location="/board/list";
+    }, false);
+
+    document.querySelector(".btn-outline-danger").addEventListener("click", function(e){
+        e.preventDefault()
+        e.stopPropagation()
+
+        formObj.action = `/board/remove`
+        formObj.method ='post'
+        formObj.submit()
+    }, false)
+</script>

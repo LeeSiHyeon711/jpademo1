@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}" lang="en">
+<div layout:fragment="content">
+    <div class="card text-bg-dark mb-3">
+        <div class="card-header">Add Files Page</div>
+        <form action="/upload/uploadPro" method="post" enctype="multipart/form-data">
+            <div class="card-body">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" style="width: 80px">Title</span>
+                    <input type="text" class="form-control" name="title" placeholder="Title..." required>
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" style="width: 80px">Content</span>
+                    <textarea class="form-control" name="content" aria-label="With textarea" placeholder="Content..." required></textarea>
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" style="width: 80px">Writer</span>
+                    <input type="text" class="form-control" name="writer" placeholder="Writer..." required>
+                </div>
+<!--                여기서부터 파일첨부-->
+                <div class="input-group mb-3">
+                    <span class="input-group-text" style="width: 80px">Files</span>
+                    <input type="file" class="form-control" name="files" placeholder="Fils.." multiple>
+                </div>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn btn-outline-primary">submit</button>
+                    <button type="reset" class="btn btn-outline-secondary">reset</button>
+                </div>
+<!--                파일첨부 코드 끝(form action, method 확인하기)-->
+            </div>
+        </form>
+    </div>
+</div>
+<script layout:fragment="script" th:inline="javascript">
+</script>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>strList</title>
+</head>
+<body>
+<div th:text="${strList}"></div>
+<ul>
+  <li th:each="str:${strList}">[[${str}]]</li>
+</ul>
+<hr>
+<div th:text="${strList2}"></div>
+<ul>
+  <th:block th:each="str:${strList2}">
+    <li>[[${str}]]</li>
+  </th:block>
+</ul>
+<hr>
+<div th:text="${maps}"></div>
+<div>[[${maps}]]</div>
+<div th:text="${maps.홍길동}"></div>
+<hr>
+<div>[[${sampleDTO}]]</div>
+<div th:text="${sampleDTO}"></div>
+<div>[[${sampleDTO.name}]]</div>
+<div>[[${sampleDTO.age}]]</div>
+<div>[[${sampleDTO.gender}]]</div>
+<script th:inline="javascript">
+  const list=[[${strList}]]
+  const map=[[${maps}]]
+  const dto=[[${sampleDTO}]]
+  console.log(list)
+  console.log(map)
+  console.log(dto)
+</script>
+</body>
+</html>
