@@ -104,6 +104,6 @@ public class UpDownController {
         }catch (Exception e){
             log.error(e.getMessage());
         }
-        return "redirect:/upload/view/{fileName}";
+        return "redirect:/upload/uploadForm";
     }
 }
