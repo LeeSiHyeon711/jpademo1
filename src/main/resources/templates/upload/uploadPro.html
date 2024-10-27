@@ -4,7 +4,6 @@
       layout:decorate="~{layout/basic.html}" lang="en">
 <div layout:fragment="content">
     <div class="col">
-        <div>[[${list}]]</div>
         <div class="card" th:if="${list != null && list.size() > 0}">
           <div th:each="fileDTO:${list}">
             <div th:if="${fileDTO.image}">

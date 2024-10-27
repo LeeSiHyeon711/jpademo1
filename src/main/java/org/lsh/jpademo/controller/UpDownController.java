@@ -2,9 +2,12 @@ package org.lsh.jpademo.controller;
 
 import lombok.extern.log4j.Log4j2;
 import net.coobird.thumbnailator.Thumbnailator;
+import org.lsh.jpademo.domain.Board;
 import org.lsh.jpademo.dto.BoardDTO;
 import org.lsh.jpademo.dto.upload.UploadFileDTO;
 import org.lsh.jpademo.dto.upload.UploadResultDTO;
+import org.lsh.jpademo.service.BoardService;
+import org.lsh.jpademo.service.BoardServiceImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -27,8 +30,15 @@ import java.util.*;
 @Log4j2
 @RequestMapping("/upload")
 public class UpDownController {
+    private final BoardServiceImpl boardServiceImpl;
+    private final BoardService boardService;
     @Value("${org.lsh.jpademo.upload.path}")
     private String uploadPath;
+
+    public UpDownController(BoardServiceImpl boardServiceImpl, BoardService boardService) {
+        this.boardServiceImpl = boardServiceImpl;
+        this.boardService = boardService;
+    }
 
     @GetMapping("/uploadForm")
     public void uploadForm(){
@@ -36,7 +46,7 @@ public class UpDownController {
     }
 
     @PostMapping(value = "/uploadPro", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void uploadPro(UploadResultDTO uploadResultDTO,UploadFileDTO uploadFileDTO, BoardDTO boardDTO, Model model){
+    public String uploadPro(UploadResultDTO uploadResultDTO,UploadFileDTO uploadFileDTO, BoardDTO boardDTO, Model model){
         log.info("uploadResultDTO : "+uploadResultDTO);
         log.info(uploadFileDTO);
         log.info(boardDTO);
@@ -55,7 +65,8 @@ public class UpDownController {
                     multipartFile.transferTo(savePath);
                     if (Files.probeContentType(savePath).startsWith("image")){
                         image = true;
-                        File thumbFile = new File(uploadPath,"s_"+uuid+"_"+originalName);
+                        String thumbnailFileName = "s_"+ uuid + "_" + originalName;
+                        File thumbFile = new File(uploadPath, thumbnailFileName);
                         Thumbnailator.createThumbnail(savePath.toFile(),thumbFile,200,200);
                     }
                 }catch (IOException e){e.printStackTrace();}
@@ -68,7 +79,10 @@ public class UpDownController {
                 model.addAttribute("list",list);
                 model.addAttribute("uploadPath",uploadPath);
             });
+            BoardDTO board = boardServiceImpl.saveBoardWithImages(boardDTO, list);
+            model.addAttribute("board",board);
         }
+        return "redirect:/board/list";
     }
 
     @GetMapping("/view/{fileName}")

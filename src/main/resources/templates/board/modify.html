@@ -23,6 +23,24 @@
                     <span class="input-group-text" style="width:80px">Content</span>
                     <input class="form-control" name="content" th:value="${dto.content}">
                 </div>
+                <!-- 첨부 파일 목록 -->
+                <div class="col">
+                    <div class="card" th:if="${dto.fileNames != null && dto.fileNames.size() > 0}">
+                        <div th:each="fileName : ${dto.fileNames}">
+                            <!-- 이미지 파일일 경우 썸네일 표시 -->
+                            <div th:if="${fileName.endsWith('.jpg') or fileName.endsWith('.png') or fileName.endsWith('.jpeg')}">
+                                <img th:src="|/upload/view/s_${fileName}|">
+                                <span><a th:href="|@{/upload/remove(fileName=${fileName})}|">삭제하기</a></span>
+                            </div>
+                            <!-- 이미지가 아닌 파일일 경우 파일명 표시 -->
+                            <div th:unless="${fileName.endsWith('.jpg') or fileName.endsWith('.png') or fileName.endsWith('.jpeg')}">
+                                <span>[[${fileName}]]</span>
+                                <span><a th:href="|@{/upload/remove(fileName=${fileName})}|">삭제하기</a></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
                 <br>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                     <button type="button" class="btn btn-outline-success">modify</button>
@@ -59,3 +77,4 @@
         formObj.submit()
     }, false)
 </script>
+</html>
