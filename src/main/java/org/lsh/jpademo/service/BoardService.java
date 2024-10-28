@@ -1,6 +1,7 @@
 package org.lsh.jpademo.service;
 
 import org.lsh.jpademo.domain.Board;
+import org.lsh.jpademo.domain.BoardImage;
 import org.lsh.jpademo.dto.BoardDTO;
 import org.lsh.jpademo.dto.PageRequestDTO;
 import org.lsh.jpademo.dto.PageResponseDTO;
@@ -49,12 +50,14 @@ public interface BoardService {
                 .visitCount(board.getVisitCount())
                 .build();
 
-        List<String> fileNames =
-                board.getImageSet().stream().sorted().map(boardImage ->
-                                boardImage.getUuid()+"_"+boardImage.getFileName())
+        List<UploadResultDTO> fileNames =
+                board.getImageSet().stream()
+                        .sorted()
+                        .map(this::createUploadResultDTO)
                         .collect(Collectors.toList());
         boardDTO.setFileNames(fileNames);
         return boardDTO;
     }
 
+    UploadResultDTO createUploadResultDTO(BoardImage boardImage);
 }

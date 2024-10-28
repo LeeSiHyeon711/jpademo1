@@ -91,7 +91,7 @@ public class BoardController {
     public void read(Long bno, PageRequestDTO pageRequestDTO, Model model){
         BoardDTO boardDTO = boardService.readOne(bno, true); // 방문 수 증가
         log.info(boardDTO);
-        List<String> fileNames = boardDTO.getFileNames();
+        List<UploadResultDTO> fileNames = boardDTO.getFileNames();
         model.addAttribute("dto", boardDTO);
         model.addAttribute("fileName", fileNames);
     }
@@ -99,7 +99,7 @@ public class BoardController {
     public String modify(@PathVariable Long bno, PageRequestDTO pageRequestDTO, Model model){
         BoardDTO boardDTO = boardService.readOne(bno, false); //방문 수 증가하지 않음
         log.info(boardDTO);
-        List<String> fileNames = boardDTO.getFileNames();
+        List<UploadResultDTO> fileNames = boardDTO.getFileNames();
         model.addAttribute("dto", boardDTO);
         model.addAttribute("fileName", fileNames);
         return "board/modify";

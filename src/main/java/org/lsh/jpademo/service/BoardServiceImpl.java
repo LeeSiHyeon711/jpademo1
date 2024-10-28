@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.coobird.thumbnailator.Thumbnailator;
 import org.lsh.jpademo.domain.Board;
+import org.lsh.jpademo.domain.BoardImage;
 import org.lsh.jpademo.dto.BoardDTO;
 import org.lsh.jpademo.dto.PageRequestDTO;
 import org.lsh.jpademo.dto.PageResponseDTO;
@@ -17,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -68,9 +68,10 @@ public class BoardServiceImpl implements BoardService {
         board.change(boardDTO.getTitle(), boardDTO.getContent(), boardDTO.getWriter());
         board.clearImages();
         if (boardDTO.getFileNames() != null) {
-            for (String fileName : boardDTO.getFileNames()) {
-                String[] arr = fileName.split("_");
-                board.addImage(arr[0], arr[1]);
+            for (UploadResultDTO fileDTO : boardDTO.getFileNames()) {
+                String uuid = fileDTO.getUuid();
+                String fileName = fileDTO.getFileName();
+                board.addImage(uuid, fileName);
             }
         }
         boardRepository.save(board);
@@ -124,22 +125,20 @@ public class BoardServiceImpl implements BoardService {
         if (uploadFileDTO.getFiles() == null || uploadFileDTO.getFiles().isEmpty()) {
             return null; // 파일이 없을 때는 null 반환
         }
-
         List<UploadResultDTO> list = new ArrayList<>();
         uploadFileDTO.getFiles().forEach(multipartFile -> {
             try {
                 String originalName = multipartFile.getOriginalFilename();
-
                 // 파일 이름이 비어 있으면 처리하지 않음
                 if (originalName == null || originalName.isEmpty()) {
                     return;
                 }
-
                 String uuid = UUID.randomUUID().toString();
                 Path savePath = Paths.get(uploadPath, uuid + "_" + originalName);
-                multipartFile.transferTo(savePath);
 
+                multipartFile.transferTo(savePath);
                 boolean isImage = Files.probeContentType(savePath) != null && Files.probeContentType(savePath).startsWith("image");
+
                 if (isImage) {
                     String thumbnailFileName = "s_" + uuid + "_" + originalName;
                     File thumbFile = new File(uploadPath, thumbnailFileName);
@@ -151,7 +150,24 @@ public class BoardServiceImpl implements BoardService {
                 log.error("File upload error: ", e);
             }
         });
-
         return list;
+    }
+    @Override
+    public UploadResultDTO createUploadResultDTO(BoardImage boardImage) {
+        String fullFileName = boardImage.getUuid() + "_" + boardImage.getFileName();
+        boolean isImage = false;
+        try {
+            Path filePath = Paths.get(uploadPath, fullFileName);
+            String contentType = Files.probeContentType(filePath);
+            isImage = contentType != null && contentType.startsWith("image");
+        }catch (IOException e) {
+            log.error("File to determine content type", e);
+        }
+        return new UploadResultDTO(
+                boardImage.getUuid(),
+                boardImage.getFileName(),
+                isImage
+        );
+
     }
 }

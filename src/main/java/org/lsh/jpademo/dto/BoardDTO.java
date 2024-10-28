@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.lsh.jpademo.dto.upload.UploadResultDTO;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
@@ -31,5 +32,5 @@ public class BoardDTO {
     private LocalDateTime regDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime modDate;
-    private List<String> fileNames;
+    private List<UploadResultDTO> fileNames;
 }

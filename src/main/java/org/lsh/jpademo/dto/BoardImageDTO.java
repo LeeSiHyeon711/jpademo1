@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.lsh.jpademo.dto.upload.UploadResultDTO;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -11,6 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BoardImageDTO {
     private String uuid;
-    private String fileName;
+    private List<UploadResultDTO> fileName;
     private int ord;
+    private boolean isImage;
 }
